@@ -1,6 +1,8 @@
 use crate::syntax::check::Check;
 use crate::syntax::{error, Api, Pair};
 
+const DOUBLE_UNDERSCORE_ALLOWLIST: [&str; 1] = ["pxrReserved"];
+
 fn check(cx: &mut Check, name: &Pair) {
     for segment in &name.namespace {
         check_cxx_ident(cx, &segment.to_string());
@@ -12,7 +14,11 @@ fn check(cx: &mut Check, name: &Pair) {
         if ident.starts_with("cxxbridge") {
             cx.error(ident, error::CXXBRIDGE_RESERVED.msg);
         }
-        if ident.contains("__") {
+        if ident.contains("__")
+            && !DOUBLE_UNDERSCORE_ALLOWLIST
+                .iter()
+                .any(|allowlist| ident.contains(allowlist))
+        {
             cx.error(ident, error::DOUBLE_UNDERSCORE.msg);
         }
     }
