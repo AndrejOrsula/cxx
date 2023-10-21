@@ -18,3 +18,8 @@ pub const STD: &str = {
 
     flag
 };
+
+#[cfg(feature = "use_cxx11_abi")]
+pub const CXX11_ABI: &str = "1";
+#[cfg(not(feature = "use_cxx11_abi"))]
+pub const CXX11_ABI: &str = "0";
